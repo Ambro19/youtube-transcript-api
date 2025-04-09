@@ -71,7 +71,8 @@ def login(data: AuthRequest):
 @app.post("/transcript")
 def get_transcript(data: TranscriptRequest):
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(data.video_id, languages=['en'])
+        #transcript = YouTubeTranscriptApi.get_transcript(data.video_id, languages=['en'])
+        transcript = requests.post()
         full_text = " ".join([seg.get("text", "") for seg in transcript])
         return {"transcript": full_text}
     except Exception as e:
