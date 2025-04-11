@@ -1,10 +1,7 @@
-# ✅ STEP 1: UPDATE FastAPI BACKEND (CLOUD) with Auth
-# File: main.py (in transcript_api)
-
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from youtube_transcript_api import YouTubeTranscriptApi
-from passlib.hash import bcrypt
+from passlib.hash import pbkdf2_sha256
 import sqlite3
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -51,7 +48,7 @@ def register(data: AuthRequest):
     if c.fetchone():
         conn.close()
         raise HTTPException(status_code=400, detail="Username already exists")
-    hashed_password = bcrypt.hash(data.password)
+    hashed_password = pbkdf2_sha256.hash(data.password)
     c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (data.username, hashed_password))
     conn.commit()
     conn.close()
@@ -64,18 +61,15 @@ def login(data: AuthRequest):
     c.execute("SELECT password FROM users WHERE username = ?", (data.username,))
     row = c.fetchone()
     conn.close()
-    if row and bcrypt.verify(data.password, row[0]):
+    if row and pbkdf2_sha256.verify(data.password, row[0]):
         return {"message": "Login successful"}
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.post("/transcript")
 def get_transcript(data: TranscriptRequest):
     try:
-        #transcript = YouTubeTranscriptApi.get_transcript(data.video_id, languages=['en'])
-        transcript = requests.post()
+        transcript = YouTubeTranscriptApi.get_transcript(data.video_id, languages=['en'])
         full_text = " ".join([seg.get("text", "") for seg in transcript])
         return {"transcript": full_text}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-
