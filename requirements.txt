@@ -3,4 +3,6 @@ uvicorn
 youtube-transcript-api
 passlib[bcrypt]
 stripe
+python-dotenv
+
 
