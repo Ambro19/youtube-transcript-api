@@ -152,10 +152,6 @@ def create_checkout_session(data: StripeRequest):
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-# import stripe
-# from fastapi import Request
-# import os
-
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
