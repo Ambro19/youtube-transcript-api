@@ -7,9 +7,14 @@ from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
 import stripe
 from fastapi.responses import JSONResponse
-# from fastapi import Request
+import os
+from dotenv import load_dotenv
+load_dotenv()  # This loads all key=value pairs from `.env` into os.environ
 
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
+DOMAIN = "https://youtube-transcript-api-3.onrender.com"     #"https://your-frontend-domain-or-render-backend"
 
 app = FastAPI()
 
@@ -121,12 +126,6 @@ def subscribe(data: SubscriptionRequest):
     conn.commit()
     conn.close()
     return {"message": f"Subscription activated until {expiry}"}
-
-
-# Replace this with your real Stripe secret key
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-
-DOMAIN = "https://youtube-transcript-api-3.onrender.com"     #"https://your-frontend-domain-or-render-backend"
 
 class StripeRequest(BaseModel):
     username: str
