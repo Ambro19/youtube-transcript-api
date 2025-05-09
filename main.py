@@ -5,10 +5,13 @@ from passlib.hash import pbkdf2_sha256
 import sqlite3
 from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
-import stripe
 from fastapi.responses import JSONResponse
 import os
+import stripe
 import requests
+
+from fastapi.staticfiles import StaticFiles
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 from dotenv import load_dotenv
 load_dotenv()  # This loads all key=value pairs from `.env` into os.environ
@@ -16,7 +19,7 @@ load_dotenv()  # This loads all key=value pairs from `.env` into os.environ
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
-DOMAIN = "https://youtube-transcript-api-3.onrender.com"     #"https://your-frontend-domain-or-render-backend"
+DOMAIN = "https://youtube-transcript-api-3.onrender.com" 
 
 app = FastAPI()
 
@@ -146,13 +149,14 @@ def create_checkout_session(data: StripeRequest):
                 "quantity": 1,
             }],
             mode="payment",
-            success_url=f"{DOMAIN}/success?username={data.username}",
-            cancel_url=f"{DOMAIN}/cancel",
+            #success_url=f"{DOMAIN}/success?username={data.username}",
+            #cancel_url=f"{DOMAIN}/cancel",
+            success_url=f"{DOMAIN}/static/success.html"
+            cancel_url=f"{DOMAIN}/static/cancel.html"
         )
         return {"url": checkout_session.url}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
-
 
 @app.post("/webhook")
 async def stripe_webhook(request: Request):
