@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import stripe
 from fastapi.responses import JSONResponse
 import os
+import requests
+
 from dotenv import load_dotenv
 load_dotenv()  # This loads all key=value pairs from `.env` into os.environ
 
@@ -139,7 +141,7 @@ def create_checkout_session(data: StripeRequest):
                 "price_data": {
                     "currency": "usd",
                     "product_data": {"name": "YouTubeTransDownloader Pro"},
-                    "unit_amount": 299,  # $2.99
+                    "unit_amount": 785, #299,  # $2.99
                 },
                 "quantity": 1,
             }],
@@ -151,8 +153,6 @@ def create_checkout_session(data: StripeRequest):
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
-endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 @app.post("/webhook")
 async def stripe_webhook(request: Request):
