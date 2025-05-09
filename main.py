@@ -149,10 +149,8 @@ def create_checkout_session(data: StripeRequest):
                 "quantity": 1,
             }],
             mode="payment",
-            #success_url=f"{DOMAIN}/success?username={data.username}",
-            #cancel_url=f"{DOMAIN}/cancel",
-            success_url=f"{DOMAIN}/static/success.html"
-            cancel_url=f"{DOMAIN}/static/cancel.html"
+            success_url=f"{DOMAIN}/static/success.html",
+            cancel_url=f"{DOMAIN}/static/cancel.html",
         )
         return {"url": checkout_session.url}
     except Exception as e:
