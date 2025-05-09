@@ -11,7 +11,11 @@ import stripe
 import requests
 
 from fastapi.staticfiles import StaticFiles
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app = FastAPI()  # ✅ Define app first
+
+app.mount("/static", StaticFiles(directory="static"), name="static")  # ✅ Then use it
+
 
 from dotenv import load_dotenv
 load_dotenv()  # This loads all key=value pairs from `.env` into os.environ
@@ -21,7 +25,14 @@ endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
 
 DOMAIN = "https://youtube-transcript-api-3.onrender.com" 
 
-app = FastAPI()
+
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()  # ✅ Define app first
+
+app.mount("/static", StaticFiles(directory="static"), name="static")  # ✅ Then use it
+
+
 
 app.add_middleware(
     CORSMiddleware,
