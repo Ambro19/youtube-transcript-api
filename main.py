@@ -188,7 +188,6 @@ async def stripe_webhook(request: Request):
             c.execute("UPDATE users SET subscription = 'active', expiry = ? WHERE username = ?", (expiry, username))
             conn.commit()
             conn.close()
-
     except stripe.error.SignatureVerificationError as e:
         return JSONResponse(status_code=400, content={"error": "Invalid signature"})
 
