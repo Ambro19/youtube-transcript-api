@@ -160,7 +160,7 @@ def create_checkout_session(data: StripeRequest):
                 "quantity": 1,
             }],
             mode="payment",
-            success_url=f"{DOMAIN}/static/success.html",
+            success_url=f"{DOMAIN}/static/success.html?username={data.username}",
             cancel_url=f"{DOMAIN}/static/cancel.html",
         )
         return {"url": checkout_session.url}
